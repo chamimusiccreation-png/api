@@ -25,7 +25,7 @@ app.get('/api/download', (req, res) => {
     // yt-dlp command එක run කරනවා
     // -j = JSON output
     // -f best = හොඳම quality එක
-    const command = `yt_dlp -j --no-playlist --quiet "${videoUrl}"`;
+    const command = `python3 -m yt_dlp -j --no-playlist --quiet --no-warnings "${videoUrl}"`;
 
     exec(command, { maxBuffer: 1024 * 1024 * 10 }, (error, stdout, stderr) => {
         if (error) {

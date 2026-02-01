@@ -1,4 +1,4 @@
 flask
-yt-dlp
 flask-cors
+yt-dlp
 gunicorn

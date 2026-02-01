@@ -1,0 +1,9 @@
+[package]
+name = "yt_api_rust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix-web = "4"       # Web Server එක
+serde = { version = "1.0", features = ["derive"] } # JSON වැඩ වලට
+serde_json = "1.0"    # JSON parse කරන්න

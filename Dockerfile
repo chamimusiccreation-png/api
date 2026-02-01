@@ -1,29 +1,28 @@
-# Node.js 18 පාවිච්චි කරමු (Stable)
-FROM node:18-bullseye-slim
+# 1. Debian වෙනුවට Alpine ගන්නවා (මේක ඉතාම පොඩියි, වේගවත්)
+FROM node:18-alpine
 
-# අපිට System එකට Python සහ ffmpeg දාගන්න වෙනවා (yt-dlp දුවන්න)
-RUN apt-get update && apt-get install -y \
+# 2. System updates සහ අවශ්‍ය Tools දාගන්නවා
+# apk add කියන්නේ Alpine වල install කරන ක්‍රමය. මේක පට්ට fast.
+RUN apk add --no-cache \
     python3 \
-    python3-pip \
-    ffmpeg \
-    && rm -rf /var/lib/apt/lists/*
+    py3-pip \
+    ffmpeg
 
-# yt-dlp එක pip හරහා install කරගමු
-# --break-system-packages දාන්නේ අලුත් Python version වල අවුලක් එන නිසා
+# 3. yt-dlp install කරගන්නවා
 RUN pip3 install yt-dlp --break-system-packages
 
-# App එකේ ෆයිල් දාන්න තැනක් හදාගමු
+# 4. App directory එක හදනවා
 WORKDIR /app
 
-# Dependencies install කරමු
+# 5. Dependencies install කරනවා
 COPY package.json .
 RUN npm install
 
-# ඉතුරු ෆයිල් ටික copy කරමු
+# 6. ෆයිල් ටික copy කරනවා
 COPY . .
 
-# Port එක 8000
+# 7. Port එක set කරනවා
 ENV PORT=8000
 
-# Server එක start කරමු
+# 8. Server එක start කරනවා
 CMD ["node", "index.js"]

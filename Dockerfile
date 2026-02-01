@@ -1,15 +1,12 @@
-# Python පොඩි version එකක් ගමු
 FROM python:3.9-slim
 
-# Working directory එක හදමු
 WORKDIR /app
 
-# Dependencies install කරගමු
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Server එකට අවශ්‍ය file ටික copy කරමු
 COPY . .
 
-# Flask run කරමු (Port 8000)
-CMD ["gunicorn", "-b", "0.0.0.0:8000", "app:app"]
+# මෙතන PORT එක දෙන එක වැදගත් නැහැ, Koyeb එකෙන් environment variable එකක් විදිහට දෙනවා.
+# හැබැයි අපි Gunicorn command එක හරියට දෙන්න ඕන.
+CMD gunicorn -b 0.0.0.0:8000 app:app

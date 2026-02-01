@@ -1,29 +1,29 @@
-# Stage 1: Build the Rust App
-# වෙනස: 'latest' වෙනුවට '1-bookworm' දානවා. 
-# එතකොට Runtime එකයි Build එකයි දෙකම එකම OS (Debian Bookworm).
-FROM rust:1-bookworm as builder
+# Node.js 18 පාවිච්චි කරමු (Stable)
+FROM node:18-bullseye-slim
 
-WORKDIR /usr/src/app
-COPY . .
-RUN cargo install --path .
-
-# Stage 2: Runtime Environment
-# මේකත් Bookworm නිසා දැන් ප්‍රශ්නයක් නෑ.
-FROM python:3.11-slim-bookworm
-
-# 1. System dependencies
+# අපිට System එකට Python සහ ffmpeg දාගන්න වෙනවා (yt-dlp දුවන්න)
 RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
     ffmpeg \
-    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. yt-dlp install
-RUN pip install --no-cache-dir yt-dlp
+# yt-dlp එක pip හරහා install කරගමු
+# --break-system-packages දාන්නේ අලුත් Python version වල අවුලක් එන නිසා
+RUN pip3 install yt-dlp --break-system-packages
 
-# 3. Copy binary
-COPY --from=builder /usr/local/cargo/bin/yt_api_rust /usr/local/bin/yt_api_rust
+# App එකේ ෆයිල් දාන්න තැනක් හදාගමු
+WORKDIR /app
 
+# Dependencies install කරමු
+COPY package.json .
+RUN npm install
+
+# ඉතුරු ෆයිල් ටික copy කරමු
+COPY . .
+
+# Port එක 8000
 ENV PORT=8000
 
-# 4. Start
-CMD ["yt_api_rust"]
+# Server එක start කරමු
+CMD ["node", "index.js"]
